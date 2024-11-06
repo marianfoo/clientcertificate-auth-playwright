@@ -112,20 +112,35 @@ class CertificateAuthSession {
       // Get all cookies after authentication
       this.cookies = await this.context.cookies();
 
+    // Filter and prepare headers for the API call
+    const filteredCookies = this.cookies.filter(cookie => 
+        (cookie.name === 'X-CSRF-RME-Angular') ||
+        (cookie.name === 'IDP_SESSION_MARKER_accounts') ||
+        ((cookie.name === '__VCAP_ID__' || cookie.name === 'JSESSIONID') && cookie.domain === 'roadmaps.sap.com')
+      );
+
       // Simplified cookie filtering - remove SAP-specific filters
-      const headerCookiesString = this.cookies.map(cookie => 
+      const headerCookiesString = filteredCookies.map(cookie => 
         `${cookie.name}=${cookie.value}`
       ).join('; ');
 
       // Generic headers
       this.headers = {
         'cookie': headerCookiesString,
-        "accept": "application/json, text/plain, */*",
-        "accept-language": "en-US,en;q=0.9",
-        "cache-control": "no-cache",
-        "pragma": "no-cache",
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "accept-language": "de-DE,de;q=0.9",
+        "cache-control": "max-age=0",
+        "priority": "u=0, i",
+        "sec-ch-ua": "\"Chromium\";v=\"129\", \"Not=A?Brand\";v=\"8\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"macOS\"",
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "same-site",
+        "sec-fetch-user": "?1",
+        "upgrade-insecure-requests": "1",
         "Referer": this.url,
-        "Referrer-Policy": "strict-origin-when-cross-origin"
+        "Referrer-Policy": "origin"
       };
     } catch (error) {
       console.error('An error occurred during authentication:', error);
