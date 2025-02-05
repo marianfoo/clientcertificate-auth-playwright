@@ -1,6 +1,6 @@
 {
     "name": "playwright-client-certificate-login",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "A playwright script to login using client certificates",
     "main": "index.js",
     "scripts": {
